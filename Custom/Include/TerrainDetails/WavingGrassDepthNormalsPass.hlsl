@@ -26,6 +26,7 @@ GrassVertexDepthNormalOutput DepthNormalOnlyVertex(GrassVertexDepthNormalInput v
 {
     GrassVertexDepthNormalOutput o = (GrassVertexDepthNormalOutput)0;
     UNITY_SETUP_INSTANCE_ID(v);
+    PRE_VERT(v.vertex, v.tangent);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
@@ -47,6 +48,7 @@ GrassVertexDepthNormalOutput DepthNormalOnlyBillboardVertex(GrassVertexDepthNorm
 {
     GrassVertexDepthNormalOutput o = (GrassVertexDepthNormalOutput)0;
     UNITY_SETUP_INSTANCE_ID(v);
+    PRE_VERT(v.vertex, v.tangent); // Needs testing, might not work for billboards
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 

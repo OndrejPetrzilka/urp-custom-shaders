@@ -1,5 +1,8 @@
-#ifndef UNIVERSAL_OBJECT_MOTION_VECTORS_INCLUDED
-#define UNIVERSAL_OBJECT_MOTION_VECTORS_INCLUDED
+#ifndef OBJECT_MOTION_VECTORS
+#define OBJECT_MOTION_VECTORS
+
+#include "FeatureCustomFov.hlsl"
+
 
 #pragma target 3.5
 
@@ -63,7 +66,13 @@ Varyings vert(Attributes input)
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    const VertexPositionInputs vertexInput = GetVertexPositionInputs(input.position.xyz);
+    VertexPositionInputs vertexInput = GetVertexPositionInputs(input.position.xyz);
+
+    #ifdef _FIRST_PERSON_RENDERING_ON 
+        CustomFovDepthScale(vertexInput);
+        SetViewProjectionFov(_NonJitteredViewProjMatrix);
+        SetViewProjectionFov(_PrevViewProjMatrix);
+    #endif
 
     #if defined(_ALPHATEST_ON)
         output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
@@ -86,6 +95,8 @@ Varyings vert(Attributes input)
 #endif
 
     output.previousPositionCSNoJitter = mul(_PrevViewProjMatrix, mul(UNITY_PREV_MATRIX_M, prevPos));
+
+    ApplyMotionVectorZBias(output.positionCS);
 
     return output;
 }
@@ -113,4 +124,4 @@ float4 frag(Varyings input) : SV_Target
 }
 
 
-#endif // UNIVERSAL_OBJECT_MOTION_VECTORS_INCLUDED
+#endif // OBJECT_MOTION_VECTORS

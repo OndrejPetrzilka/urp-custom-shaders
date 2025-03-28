@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_FORWARD_LIT_DEPTH_NORMALS_PASS_INCLUDED
 #define UNIVERSAL_FORWARD_LIT_DEPTH_NORMALS_PASS_INCLUDED
 
+#include "TerrainInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
 
 // DepthNormal pass
@@ -39,6 +41,7 @@ VaryingsDepthNormal DepthNormalOnlyVertex(AttributesDepthNormal v)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     TerrainInstancing(v.positionOS, v.normalOS, v.texcoord);
+    PRE_VERTEX(v.positionOS, v.normalOS, v.texcoord);
 
     const VertexPositionInputs attributes = GetVertexPositionInputs(v.positionOS.xyz);
 

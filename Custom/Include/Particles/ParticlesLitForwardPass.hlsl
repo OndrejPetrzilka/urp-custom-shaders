@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_PARTICLES_FORWARD_LIT_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_FORWARD_LIT_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
 
@@ -68,11 +70,13 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
     VaryingsParticle output = (VaryingsParticle)0;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, input.normalOS, input.tangentOS, input.texcoords.xy, input.color);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput, input.texcoords);
 
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
     half3 vertexLight = VertexLighting(vertexInput.positionWS, half3(normalInput.normalWS));
@@ -121,6 +125,7 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
 half4 ParticlesLitFragment(VaryingsParticle input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.clipPos, input.texcoord, input.color);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     ParticleParams particleParams;
@@ -131,6 +136,7 @@ half4 ParticlesLitFragment(VaryingsParticle input) : SV_Target
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
+    FRAG_SURFACE(inputData, surfaceData);
     SETUP_DEBUG_TEXTURE_DATA_FOR_TEX(inputData, input.texcoord, _BaseMap);
 
     half4 color = UniversalFragmentPBR(inputData, surfaceData);

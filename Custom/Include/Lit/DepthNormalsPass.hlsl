@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_DEPTH_NORMALS_PASS_INCLUDED
 #define UNIVERSAL_DEPTH_NORMALS_PASS_INCLUDED
 
+#include "LitInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
@@ -26,6 +28,7 @@ struct Varyings
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
+    EXTRA_VARYINGS_DEFINITION
 };
 
 Varyings DepthNormalsVertex(Attributes input)
@@ -33,6 +36,7 @@ Varyings DepthNormalsVertex(Attributes input)
     Varyings output = (Varyings)0;
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
+    PRE_VERTEX(input.positionOS, input.normal, input.tangentOS, input.texcoord, output.extraVaryings);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     #if defined(_ALPHATEST_ON)
@@ -54,6 +58,7 @@ void DepthNormalsFragment(
 #endif
 )
 {
+    PRE_FRAG(input.positionCS, input.uv, input.extraVaryings);
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 

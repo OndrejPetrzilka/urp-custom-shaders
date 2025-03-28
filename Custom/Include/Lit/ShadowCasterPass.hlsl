@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
 #define UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
 
+#include "LitInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
@@ -27,6 +29,7 @@ struct Varyings
         float2 uv       : TEXCOORD0;
     #endif
     float4 positionCS   : SV_POSITION;
+    EXTRA_VARYINGS_DEFINITION
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -52,6 +55,7 @@ Varyings ShadowPassVertex(Attributes input)
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
 
+    PRE_VERTEX(input.positionOS, input.normalOS, float3(0,0,0), input.texcoord, output.extraVaryings);
     #if defined(_ALPHATEST_ON)
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     #endif
@@ -62,6 +66,7 @@ Varyings ShadowPassVertex(Attributes input)
 
 half4 ShadowPassFragment(Varyings input) : SV_TARGET
 {
+    PRE_FRAG(input.positionCS, input.uv, input.extraVaryings);
     UNITY_SETUP_INSTANCE_ID(input);
 
     #if defined(_ALPHATEST_ON)

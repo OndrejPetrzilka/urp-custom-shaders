@@ -12,8 +12,17 @@
 #define _DETAIL
 #endif
 
+#ifndef PER_MATERIAL_PROPERTIES_FIRST
+#define PER_MATERIAL_PROPERTIES_FIRST
+#endif
+
+#ifndef PER_MATERIAL_PROPERTIES
+#define PER_MATERIAL_PROPERTIES
+#endif
+
 // NOTE: Do not ifdef the properties here as SRP batcher can not handle different layouts.
 CBUFFER_START(UnityPerMaterial)
+PER_MATERIAL_PROPERTIES_FIRST
 float4 _BaseMap_ST;
 float4 _BaseMap_TexelSize;
 float4 _DetailAlbedoMap_ST;
@@ -31,6 +40,7 @@ half _ClearCoatSmoothness;
 half _DetailAlbedoMapScale;
 half _DetailNormalMapScale;
 half _Surface;
+PER_MATERIAL_PROPERTIES
 UNITY_TEXTURE_STREAMING_DEBUG_VARS;
 CBUFFER_END
 
@@ -140,6 +150,7 @@ half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha)
 
 #ifdef _METALLICSPECGLOSSMAP
     specGloss = half4(SAMPLE_METALLICSPECULAR(uv));
+    specGloss.rgb *= _Metallic.rrr;
     #ifdef _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         specGloss.a = albedoAlpha * _Smoothness;
     #else

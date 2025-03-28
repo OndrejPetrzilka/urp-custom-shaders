@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_DEPTH_ONLY_PASS_INCLUDED
 #define UNIVERSAL_DEPTH_ONLY_PASS_INCLUDED
 
+#include "LitInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
@@ -21,6 +23,7 @@ struct Varyings
     float4 positionCS   : SV_POSITION;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
+    EXTRA_VARYINGS_DEFINITION
 };
 
 Varyings DepthOnlyVertex(Attributes input)
@@ -28,6 +31,7 @@ Varyings DepthOnlyVertex(Attributes input)
     Varyings output = (Varyings)0;
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
+    PRE_VERTEX(input.position, float3(0,0,0), float3(0,0,0), input.texcoord, output.extraVaryings);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     #if defined(_ALPHATEST_ON)
@@ -39,6 +43,7 @@ Varyings DepthOnlyVertex(Attributes input)
 
 half DepthOnlyFragment(Varyings input) : SV_TARGET
 {
+    PRE_FRAG(input.positionCS, uv, input.extraVaryings);
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 

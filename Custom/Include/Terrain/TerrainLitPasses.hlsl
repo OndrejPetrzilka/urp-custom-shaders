@@ -2,6 +2,8 @@
 #ifndef UNIVERSAL_TERRAIN_LIT_PASSES_INCLUDED
 #define UNIVERSAL_TERRAIN_LIT_PASSES_INCLUDED
 
+#include "TerrainInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
@@ -70,7 +72,7 @@ void InitializeInputData(Varyings IN, half3 normalTS, out InputData inputData)
     #elif defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
         half3 viewDirWS = GetWorldSpaceNormalizeViewDir(IN.positionWS);
         float2 sampleCoords = (IN.uvMainAndLM.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
-        half3 normalWS = TransformObjectToWorldNormal(normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, sampler_TerrainNormalmapTexture, sampleCoords).rgb * 2 - 1));
+        half3 normalWS = TransformObjectToWorldNormal(normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, sampler_TerrainNormalmapTexture, sampleCoords).rgb * 2 - 1)) * ((_Cull == 1) ? -1 : 1);
         half3 tangentWS = cross(GetObjectToWorldMatrix()._13_23_33, normalWS);
         inputData.normalWS = TransformTangentToWorld(normalTS, half3x3(-tangentWS, cross(normalWS, tangentWS), normalWS));
         half3 SH = IN.vertexSH;
@@ -303,6 +305,7 @@ Varyings SplatmapVert(Attributes v)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     TerrainInstancing(v.positionOS, v.normalOS, v.texcoord);
+    PRE_VERTEX(v.positionOS, v.normalOS, v.texcoord);
 
     VertexPositionInputs Attributes = GetVertexPositionInputs(v.positionOS.xyz);
 
@@ -459,6 +462,7 @@ void SplatmapFragment(
 #endif
 
     InitializeBakedGIData(IN, inputData);
+    FRAG_SURFACE(inputData, albedo, metallic, smoothness, occlusion);
 
 #ifdef TERRAIN_GBUFFER
 
@@ -481,6 +485,7 @@ void SplatmapFragment(
     brdfData.specular.rgb *= alpha;
     brdfData.reflectivity *= alpha;
     inputData.normalWS = inputData.normalWS * alpha;
+    inputData.positionCS = inputData.positionCS * alpha; // Needed for render graph (to write depth as color)
     smoothness *= alpha;
 
     return BRDFDataToGbuffer(brdfData, inputData, smoothness, color.rgb, occlusion);
@@ -528,6 +533,7 @@ VaryingsLean ShadowPassVertex(AttributesLean v)
     VaryingsLean o = (VaryingsLean)0;
     UNITY_SETUP_INSTANCE_ID(v);
     TerrainInstancing(v.position, v.normalOS, v.texcoord);
+    PRE_VERTEX(v.position, v.normalOS, v.texcoord);
 
     float3 positionWS = TransformObjectToWorld(v.position.xyz);
     float3 normalWS = TransformObjectToWorldNormal(v.normalOS);
@@ -569,6 +575,7 @@ VaryingsLean DepthOnlyVertex(AttributesLean v)
     UNITY_SETUP_INSTANCE_ID(v);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     TerrainInstancing(v.position, v.normalOS);
+    PRE_VERTEX(v.position, v.normalOS, v.texcoord);
     o.clipPos = TransformObjectToHClip(v.position.xyz);
     o.texcoord = v.texcoord;
     return o;

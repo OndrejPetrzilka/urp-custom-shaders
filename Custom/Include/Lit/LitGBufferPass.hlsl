@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_LIT_GBUFFER_PASS_INCLUDED
 #define UNIVERSAL_LIT_GBUFFER_PASS_INCLUDED
 
+#include "LitInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
@@ -68,6 +70,7 @@ struct Varyings
     float4 positionCS               : SV_POSITION;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
+    EXTRA_VARYINGS_DEFINITION
 };
 
 void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData)
@@ -139,6 +142,7 @@ Varyings LitGBufferPassVertex(Attributes input)
     Varyings output = (Varyings)0;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, input.normalOS, input.tangentOS, input.texcoord, output.extraVaryings);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
@@ -148,6 +152,7 @@ Varyings LitGBufferPassVertex(Attributes input)
     // this is required to avoid skewing the direction during interpolation
     // also required for per-vertex lighting and SH evaluation
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput);
 
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
 
@@ -197,6 +202,7 @@ Varyings LitGBufferPassVertex(Attributes input)
 FragmentOutput LitGBufferPassFragment(Varyings input)
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.positionCS, input.uv, input.extraVaryings);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
 #if defined(_PARALLAXMAP)
@@ -218,6 +224,7 @@ FragmentOutput LitGBufferPassFragment(Varyings input)
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
+    FRAG_SURFACE(inputData, surfaceData, input.extraVaryings);
     SETUP_DEBUG_TEXTURE_DATA(inputData, UNDO_TRANSFORM_TEX(input.uv, _BaseMap));
 
 #if defined(_DBUFFER)

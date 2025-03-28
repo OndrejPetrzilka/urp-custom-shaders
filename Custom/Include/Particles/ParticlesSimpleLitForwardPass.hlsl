@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_PARTICLES_FORWARD_SIMPLE_LIT_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_FORWARD_SIMPLE_LIT_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
 
@@ -67,11 +69,13 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
     VaryingsParticle output;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, input.normalOS, input.tangentOS, input.texcoords.xy, input.color);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput, input.texcoords);
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
 
 #ifdef _NORMALMAP
@@ -119,12 +123,13 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
 half4 ParticlesLitFragment(VaryingsParticle input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.clipPos, input.texcoord, input.color);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     ParticleParams particleParams;
     InitParticleParams(input, particleParams);
 
-    half3 normalTS = SampleNormalTS(particleParams.uv, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
+    half3 normalTS = SampleNormalTS(particleParams.uv + NORMAL_UV_OFFSET, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
     half4 albedo = SampleAlbedo(TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap), particleParams);
     half3 diffuse = AlphaModulate(albedo.rgb, albedo.a);
     half alpha = albedo.a;

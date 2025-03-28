@@ -4,8 +4,17 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesInput.hlsl"
 
+#ifndef PER_MATERIAL_PROPERTIES_FIRST
+#define PER_MATERIAL_PROPERTIES_FIRST
+#endif
+
+#ifndef PER_MATERIAL_PROPERTIES
+#define PER_MATERIAL_PROPERTIES
+#endif
+
 // NOTE: Do not ifdef the properties here as SRP batcher can not handle different layouts.
 CBUFFER_START(UnityPerMaterial)
+PER_MATERIAL_PROPERTIES_FIRST
     float4 _SoftParticleFadeParams;
     float4 _CameraFadeParams;
     float4 _BaseMap_ST;
@@ -19,6 +28,7 @@ CBUFFER_START(UnityPerMaterial)
     half _DistortionStrengthScaled;
     half _DistortionBlend;
     half _Surface;
+PER_MATERIAL_PROPERTIES
 CBUFFER_END
 
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"

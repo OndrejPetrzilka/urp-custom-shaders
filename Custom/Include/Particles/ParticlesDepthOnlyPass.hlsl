@@ -1,16 +1,32 @@
 #ifndef UNIVERSAL_PARTICLES_LIT_DEPTH_ONLY_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_LIT_DEPTH_ONLY_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+#if defined(_ALPHATEST_ON)
+    #define INPUT_TEX_VS input.texcoords.xy
+    #define INPUT_TEX_PS input.texcoord.xy
+    #define INPUT_COLOR input.color
+#else
+    float2 tmpTex = float2(0,0);
+    #define INPUT_TEX_VS tmpTex
+    #define INPUT_TEX_PS tmpTex
+    #define INPUT_COLOR half4(0,0,0,0)
+#endif
 
 VaryingsDepthOnlyParticle DepthOnlyVertex(AttributesDepthOnlyParticle input)
 {
     VaryingsDepthOnlyParticle output = (VaryingsDepthOnlyParticle)0;
     UNITY_SETUP_INSTANCE_ID(input);
+    float2 tmpTex = float2(0,0);
+    PRE_VERTEX(input.vertex, float3(0,0,0), float3(0,0,0), INPUT_TEX_VS, INPUT_COLOR);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
+    POST_VERTEX_TRANSFORM(vertexInput, INPUT_TEX_VS);
     output.clipPos = vertexInput.positionCS;
 
     #if defined(_ALPHATEST_ON)
@@ -33,6 +49,8 @@ VaryingsDepthOnlyParticle DepthOnlyVertex(AttributesDepthOnlyParticle input)
 half DepthOnlyFragment(VaryingsDepthOnlyParticle input) : SV_TARGET
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    float2 tmpTex = float2(0,0);
+    PRE_FRAG(input.clipPos, INPUT_TEX_PS, INPUT_COLOR);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     // Check if we need to discard...

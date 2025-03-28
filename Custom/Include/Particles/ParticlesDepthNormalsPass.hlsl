@@ -1,17 +1,36 @@
 #ifndef UNIVERSAL_PARTICLES_LIT_DEPTH_NORMALS_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_LIT_DEPTH_NORMALS_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+#if defined(_ALPHATEST_ON)
+    #define INPUT_COLOR input.color
+#else
+    #define INPUT_COLOR half4(0,0,0,0)
+#endif
+
+#if defined(_ALPHATEST_ON) || defined(_NORMALMAP)
+    #define INPUT_TEX_VS input.texcoords.xy
+    #define INPUT_TEX_PS input.texcoord.xy
+#else
+    #define INPUT_TEX_VS tmpTex
+    #define INPUT_TEX_PS tmpTex
+#endif
 
 VaryingsDepthNormalsParticle DepthNormalsVertex(AttributesDepthNormalsParticle input)
 {
     VaryingsDepthNormalsParticle output = (VaryingsDepthNormalsParticle)0;
     UNITY_SETUP_INSTANCE_ID(input);
+    float2 tmpTex = float2(0,0);
+    PRE_VERTEX(input.vertex, input.normal, input.tangent, INPUT_TEX_VS, INPUT_COLOR);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normal, input.tangent);
+    POST_VERTEX_TRANSFORM(vertexInput, INPUT_TEX_VS);
 
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
 
@@ -48,6 +67,8 @@ VaryingsDepthNormalsParticle DepthNormalsVertex(AttributesDepthNormalsParticle i
 half4 DepthNormalsFragment(VaryingsDepthNormalsParticle input) : SV_TARGET
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    float2 tmpTex = float2(0,0);
+    PRE_FRAG(input.clipPos, INPUT_TEX_PS, INPUT_COLOR);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     // Inputs...

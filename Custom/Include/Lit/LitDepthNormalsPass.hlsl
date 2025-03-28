@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_FORWARD_LIT_DEPTH_NORMALS_PASS_INCLUDED
 #define UNIVERSAL_FORWARD_LIT_DEPTH_NORMALS_PASS_INCLUDED
 
+#include "LitInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
@@ -51,6 +53,7 @@ struct Varyings
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
+    EXTRA_VARYINGS_DEFINITION
 };
 
 
@@ -59,6 +62,7 @@ Varyings DepthNormalsVertex(Attributes input)
     Varyings output = (Varyings)0;
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
+    PRE_VERTEX(input.positionOS, input.normal, input.tangentOS, input.texcoord, output.extraVaryings);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     #if defined(REQUIRES_UV_INTERPOLATOR)
@@ -68,6 +72,7 @@ Varyings DepthNormalsVertex(Attributes input)
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normal, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput);
 
     output.normalWS = half3(normalInput.normalWS);
     #if defined(REQUIRES_WORLD_SPACE_TANGENT_INTERPOLATOR) || defined(REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR)
@@ -96,6 +101,7 @@ void DepthNormalsFragment(
 #endif
 )
 {
+    PRE_FRAG(input.positionCS, input.uv, input.extraVaryings);
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 

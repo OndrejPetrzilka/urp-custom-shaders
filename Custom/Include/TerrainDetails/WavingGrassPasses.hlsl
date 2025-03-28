@@ -158,6 +158,7 @@ GrassVertexOutput WavingGrassVert(GrassVertexInput v)
 {
     GrassVertexOutput o = (GrassVertexOutput)0;
     UNITY_SETUP_INSTANCE_ID(v);
+    PRE_VERT(v.vertex, v.tangent);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
@@ -175,6 +176,7 @@ GrassVertexOutput WavingGrassBillboardVert(GrassVertexInput v)
 {
     GrassVertexOutput o = (GrassVertexOutput)0;
     UNITY_SETUP_INSTANCE_ID(v);
+    PRE_VERT(v.vertex, v.tangent);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
@@ -200,7 +202,7 @@ inline void InitializeSimpleLitSurfaceData(GrassVertexOutput input, out SurfaceD
     outSurfaceData.alpha = alpha;
     outSurfaceData.albedo = diffuse;
     outSurfaceData.metallic = 0.0; // unused
-    outSurfaceData.specular = 0.1;// SampleSpecularSmoothness(uv, diffuseAlpha.a, _SpecColor, TEXTURE2D_ARGS(_SpecGlossMap, sampler_SpecGlossMap));
+    outSurfaceData.specular = 0.0;// SampleSpecularSmoothness(uv, diffuseAlpha.a, _SpecColor, TEXTURE2D_ARGS(_SpecGlossMap, sampler_SpecGlossMap));
     outSurfaceData.smoothness = input.posWSShininess.w;
     outSurfaceData.normalTS = 0.0; // unused
     outSurfaceData.occlusion = 1.0;
@@ -222,6 +224,7 @@ half4 LitPassFragmentGrass(GrassVertexOutput input) : SV_Target
 
     InputData inputData;
     InitializeInputData(input, inputData);
+    FRAG_SURFACE(inputData, surfaceData);
     SETUP_DEBUG_TEXTURE_DATA_FOR_TEX(inputData, input.uv, _MainTex);
 
 #ifdef TERRAIN_GBUFFER
@@ -264,6 +267,7 @@ GrassVertexDepthOnlyOutput DepthOnlyVertex(GrassVertexDepthOnlyInput v)
 {
     GrassVertexDepthOnlyOutput o = (GrassVertexDepthOnlyOutput)0;
     UNITY_SETUP_INSTANCE_ID(v);
+    PRE_VERT(v.vertex, v.tangent);
     UNITY_TRANSFER_INSTANCE_ID(v, o);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 

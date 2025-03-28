@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_PARTICLES_GBUFFER_SIMPLE_LIT_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_GBUFFER_SIMPLE_LIT_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
@@ -67,7 +69,7 @@ inline void InitializeParticleSimpleLitSurfaceData(VaryingsParticle input, out S
     ParticleParams particleParams;
     InitParticleParams(input, particleParams);
 
-    outSurfaceData.normalTS = SampleNormalTS(particleParams.uv, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
+    outSurfaceData.normalTS = SampleNormalTS(particleParams.uv + NORMAL_UV_OFFSET, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
     half4 albedo = SampleAlbedo(TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap), particleParams);
     outSurfaceData.albedo = AlphaModulate(albedo.rgb, albedo.a);
     outSurfaceData.alpha = albedo.a;
@@ -97,11 +99,13 @@ VaryingsParticle ParticlesLitGBufferVertex(AttributesParticle input)
     VaryingsParticle output;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, input.normalOS, input.tangentOS, input.texcoords.xy, input.color);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput, input.texcoords);
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
 
 #ifdef _NORMALMAP
@@ -145,6 +149,7 @@ VaryingsParticle ParticlesLitGBufferVertex(AttributesParticle input)
 FragmentOutput ParticlesLitGBufferFragment(VaryingsParticle input)
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.clipPos, input.texcoord, input.color);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     SurfaceData surfaceData;
@@ -152,6 +157,7 @@ FragmentOutput ParticlesLitGBufferFragment(VaryingsParticle input)
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
+    FRAG_SURFACE(inputData, surfaceData);
     SETUP_DEBUG_TEXTURE_DATA_FOR_TEX(inputData, input.texcoord, _BaseMap);
 
     half4 color = half4(inputData.bakedGI * surfaceData.albedo + surfaceData.emission, surfaceData.alpha);

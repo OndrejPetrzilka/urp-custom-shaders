@@ -124,6 +124,7 @@ half4 UniversalTerrainLit(InputData inputData, half3 albedo, half alpha)
 {
     SurfaceData surfaceData;
     InitializeSurfaceData(albedo, alpha, surfaceData);
+    FRAG_SURFACE(surfaceData.albedo, inputData.normalWS, inputData.positionWS.y);
 
     return UniversalTerrainLit(inputData, surfaceData);
 }

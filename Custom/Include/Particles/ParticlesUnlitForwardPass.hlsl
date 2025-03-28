@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_PARTICLES_UNLIT_FORWARD_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_UNLIT_FORWARD_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Unlit.hlsl"
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
 
@@ -55,7 +57,7 @@ void InitializeSurfaceData(ParticleParams particleParams, out SurfaceData surfac
 {
     surfaceData = (SurfaceData)0;
     half4 albedo = SampleAlbedo(TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap), particleParams);
-    half3 normalTS = SampleNormalTS(particleParams.uv, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
+    half3 normalTS = SampleNormalTS(particleParams.uv + NORMAL_UV_OFFSET, particleParams.blendUv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
 
     #if defined (_DISTORTION_ON)
     albedo.rgb = Distortion(albedo, normalTS, _DistortionStrengthScaled, _DistortionBlend, particleParams.projectedPosition);
@@ -90,11 +92,13 @@ VaryingsParticle vertParticleUnlit(AttributesParticle input)
     VaryingsParticle output = (VaryingsParticle)0;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, input.normalOS, input.tangentOS, input.texcoords.xy, input.color);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
+    POST_VERTEX_TRANSFORM(vertexInput, input.texcoords.xy);
 
     half fogFactor = 0.0;
 #if !defined(_FOG_FRAGMENT)
@@ -138,6 +142,7 @@ VaryingsParticle vertParticleUnlit(AttributesParticle input)
 half4 fragParticleUnlit(VaryingsParticle input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.clipPos, input.texcoord, input.color);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     ParticleParams particleParams;
@@ -147,6 +152,7 @@ half4 fragParticleUnlit(VaryingsParticle input) : SV_Target
     InitializeSurfaceData(particleParams, surfaceData);
     InputData inputData;
     InitializeInputData(input, surfaceData, inputData);
+    FRAG_SURFACE(inputData, surfaceData);
     SETUP_DEBUG_TEXTURE_DATA_FOR_TEX(inputData, input.texcoord, _BaseMap);
 
     half4 finalColor = UniversalFragmentUnlit(inputData, surfaceData);

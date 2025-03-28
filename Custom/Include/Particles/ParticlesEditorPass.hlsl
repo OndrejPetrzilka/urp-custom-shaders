@@ -1,6 +1,8 @@
 #ifndef UNIVERSAL_PARTICLES_EDITOR_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_EDITOR_PASS_INCLUDED
 
+#include "ParticleInjectInterface.hlsl"
+
 #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesInput.hlsl"
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
 
@@ -19,10 +21,12 @@ VaryingsParticle vertParticleEditor(AttributesParticle input)
     VaryingsParticle output = (VaryingsParticle)0;
 
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_VERTEX(input.positionOS, float3(0,0,0), float3(0,0,0), input.texcoords.xy, input.color);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
+    POST_VERTEX_TRANSFORM(vertexInput, input.texcoords);
 
     output.clipPos = vertexInput.positionCS;
     output.color = GetParticleColor(input.color);
@@ -39,6 +43,7 @@ VaryingsParticle vertParticleEditor(AttributesParticle input)
 void fragParticleSceneClip(VaryingsParticle input)
 {
     UNITY_SETUP_INSTANCE_ID(input);
+    PRE_FRAG(input.clipPos, input.texcoord, input.color);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     float2 uv = input.texcoord;
