@@ -2,25 +2,15 @@ Shader "Universal Render Pipeline/Lit Extra"
 {
     Properties
     {
-        // Specular vs Metallic workflow
-        _WorkflowMode("WorkflowMode", Float) = 1.0
-
         [MainTexture] _BaseMap("Albedo", 2D) = "white" {}
         [MainColor] _BaseColor("Color", Color) = (1,1,1,1)
 
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
         _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
-        _SmoothnessTextureChannel("Smoothness texture channel", Float) = 0
 
-        _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
+        _Metallic("Metallic", Range(0.0, 1.0)) = 1.0
         _MetallicGlossMap("Metallic", 2D) = "white" {}
-
-        _SpecColor("Specular", Color) = (0.2, 0.2, 0.2)
-        _SpecGlossMap("Specular", 2D) = "white" {}
-
-        [ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
-        [ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 
         _BumpScale("Scale", Float) = 1.0
         _BumpMap("Normal Map", 2D) = "bump" {}
@@ -40,6 +30,31 @@ Shader "Universal Render Pipeline/Lit Extra"
         _DetailNormalMapScale("Scale", Range(0.0, 2.0)) = 1.0
         [Normal] _DetailNormalMap("Normal Map", 2D) = "bump" {}
 
+        // Pulse
+        [Toggle] _PULSE("Pulse", Float) = 0.0 
+        _PulseColor("Pulse Color", Color) = (1,1,1,1)
+        [Hdr] _PulseEmission("Pulse Emission", Color) = (0,0,0)
+        _PulseInterval("Pulse Interval", Float) = 1.0
+        _PulseTransitionLength("Pulse Transition", Range(0.0, 1.0)) = 1.0
+        _PulseBalance("Pulse Balance", Range(0.0, 1.0)) = 0.5
+        _PulseBalanceSymmetry("Pulse Balance Symmetry", Range(0.0, 1.0)) = 1.0
+        [Toggle] _FIRST_PERSON_RENDERING("First Person Projection", Float) = 0.0 
+
+        // Colorization
+        [Toggle] _COLORIZE("Colorize", Float) = 0.0 
+        _TargetHue("Colorize hue", Range(0.0, 1.0)) = 0
+        _TargetHueRange("Colorize hue range", Range(0.0, 1.0)) = 0.03
+
+        // Dither
+        _DitherNoise("Dithering Noise", 2D) = "white" {}
+
+        // UV Shift
+        _UvScrollSpeed("UV Scroll Speed", Vector) = (0.0, 0.0, 0.0, 0.0)
+
+        // Dust
+        [Toggle] _DUST("Dust", Float) = 0.0
+        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3)] _DustLevel("Dust level", Integer) = 0
+
         // SRP batching compatibility for Clear Coat (Not used in Lit)
         [HideInInspector] _ClearCoatMask("_ClearCoatMask", Float) = 0.0
         [HideInInspector] _ClearCoatSmoothness("_ClearCoatSmoothness", Float) = 0.0
@@ -54,6 +69,7 @@ Shader "Universal Render Pipeline/Lit Extra"
         [HideInInspector] _SrcBlendAlpha("__srcA", Float) = 1.0
         [HideInInspector] _DstBlendAlpha("__dstA", Float) = 0.0
         [HideInInspector] _ZWrite("__zw", Float) = 1.0
+        [HideInInspector] _ZTest("__zt", Float) = 4.0
         [HideInInspector] _BlendModePreserveSpecular("_BlendModePreserveSpecular", Float) = 1.0
         [HideInInspector] _AlphaToMask("__alphaToMask", Float) = 0.0
         [HideInInspector] _AddPrecomputedVelocity("_AddPrecomputedVelocity", Float) = 0.0
@@ -104,6 +120,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             // Render State Commands
             Blend[_SrcBlend][_DstBlend], [_SrcBlendAlpha][_DstBlendAlpha]
             ZWrite[_ZWrite]
+            ZTest [_ZTest]
             Cull[_Cull]
             AlphaToMask[_AlphaToMask]
 
@@ -117,7 +134,7 @@ Shader "Universal Render Pipeline/Lit Extra"
 
             // -------------------------------------
             // Material Keywords
-            #pragma shader_feature_local _NORMALMAP
+            #define _NORMALMAP
             #pragma shader_feature_local _PARALLAXMAP
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
@@ -125,12 +142,8 @@ Shader "Universal Render Pipeline/Lit Extra"
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON
             #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            #pragma shader_feature_local_fragment _OCCLUSIONMAP
-            #pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
-            #pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+            #define _METALLICSPECGLOSSMAP
+            #define _OCCLUSIONMAP
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -200,7 +213,6 @@ Shader "Universal Render Pipeline/Lit Extra"
             // -------------------------------------
             // Material Keywords
             #pragma shader_feature_local _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
             //--------------------------------------
             // GPU Instancing
@@ -219,6 +231,8 @@ Shader "Universal Render Pipeline/Lit Extra"
 
             // -------------------------------------
             // Includes
+            #pragma multi_compile_fragment _ _FIRST_PERSON_RENDERING_ON
+            #define LIT_EXTRA_SHADOWS
             #include_with_pragmas "LitExtra.hlsl"
             #include "Include/Lit/ShadowCasterPass.hlsl"
             ENDHLSL
@@ -237,7 +251,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             // -------------------------------------
             // Render State Commands
             ZWrite[_ZWrite]
-            ZTest LEqual
+            ZTest [_ZTest]
             Cull[_Cull]
 
             HLSLPROGRAM
@@ -254,19 +268,15 @@ Shader "Universal Render Pipeline/Lit Extra"
 
             // -------------------------------------
             // Material Keywords
-            #pragma shader_feature_local _NORMALMAP
+            #define _NORMALMAP
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             //#pragma shader_feature_local_fragment _ALPHAPREMULTIPLY_ON
             #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            #pragma shader_feature_local_fragment _OCCLUSIONMAP
+            #define _METALLICSPECGLOSSMAP
+            #define _OCCLUSIONMAP
             #pragma shader_feature_local _PARALLAXMAP
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
 
-            #pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
-            #pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
 
             // -------------------------------------
@@ -317,6 +327,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             // -------------------------------------
             // Render State Commands
             ZWrite On
+            ZTest [_ZTest]
             ColorMask R
             Cull[_Cull]
 
@@ -331,7 +342,6 @@ Shader "Universal Render Pipeline/Lit Extra"
             // -------------------------------------
             // Material Keywords
             #pragma shader_feature_local _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
             // -------------------------------------
             // Unity defined keywords
@@ -361,6 +371,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             // -------------------------------------
             // Render State Commands
             ZWrite On
+            ZTest [_ZTest]
             Cull[_Cull]
 
             HLSLPROGRAM
@@ -373,11 +384,10 @@ Shader "Universal Render Pipeline/Lit Extra"
 
             // -------------------------------------
             // Material Keywords
-            #pragma shader_feature_local _NORMALMAP
+            #define _NORMALMAP
             #pragma shader_feature_local _PARALLAXMAP
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
             #pragma shader_feature_local _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
             // -------------------------------------
             // Unity defined keywords
@@ -422,13 +432,10 @@ Shader "Universal Render Pipeline/Lit Extra"
 
             // -------------------------------------
             // Material Keywords
-            #pragma shader_feature_local_fragment _SPECULAR_SETUP
             #pragma shader_feature_local_fragment _EMISSION
-            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #define _METALLICSPECGLOSSMAP
             #pragma shader_feature_local_fragment _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
-            #pragma shader_feature_local_fragment _SPECGLOSSMAP
             #pragma shader_feature EDITOR_VISUALIZATION
 
             // -------------------------------------
@@ -451,6 +458,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             // Render State Commands
             Blend[_SrcBlend][_DstBlend]
             ZWrite[_ZWrite]
+            ZTest [_ZTest]
             Cull[_Cull]
 
             HLSLPROGRAM
@@ -486,6 +494,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
 
+            #pragma multi_compile_vertex _ _FIRST_PERSON_RENDERING_ON
             #include "Include/Lit/LitInput.hlsl"
             #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
@@ -512,6 +521,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
             #define APLICATION_SPACE_WARP_MOTION 1
 
+            #pragma multi_compile_vertex _ _FIRST_PERSON_RENDERING_ON
             #include "Include/Lit/LitInput.hlsl"
             #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
