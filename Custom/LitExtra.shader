@@ -1,4 +1,4 @@
-Shader "Universal Render Pipeline/Lit"
+Shader "Universal Render Pipeline/Lit Extra"
 {
     Properties
     {
@@ -169,8 +169,8 @@ Shader "Universal Render Pipeline/Lit"
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitForwardPass.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
+            #include "Include/Lit/LitForwardPass.hlsl"
             ENDHLSL
         }
 
@@ -219,8 +219,8 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
+            #include "Include/Lit/ShadowCasterPass.hlsl"
             ENDHLSL
         }
 
@@ -301,8 +301,8 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitGBufferPass.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
+            #include "Include/Lit/LitGBufferPass.hlsl"
             ENDHLSL
         }
 
@@ -344,8 +344,8 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
+            #include "Include/Lit/DepthOnlyPass.hlsl"
             ENDHLSL
         }
 
@@ -394,8 +394,8 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitDepthNormalsPass.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
+            #include "Include/Lit/LitDepthNormalsPass.hlsl"
             ENDHLSL
         }
 
@@ -433,7 +433,7 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitMetaPass.hlsl"
 
             ENDHLSL
@@ -470,7 +470,7 @@ Shader "Universal Render Pipeline/Lit"
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Utils/Universal2D.hlsl"
             ENDHLSL
         }
@@ -486,8 +486,8 @@ Shader "Universal Render Pipeline/Lit"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ObjectMotionVectors.hlsl"
+            #include "Include/Lit/LitInput.hlsl"
+            #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
         }
 
@@ -512,12 +512,12 @@ Shader "Universal Render Pipeline/Lit"
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
             #define APLICATION_SPACE_WARP_MOTION 1
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ObjectMotionVectors.hlsl"
+            #include "Include/Lit/LitInput.hlsl"
+            #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
         }
     }
 
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.LitShader"
+    CustomEditor "LitExtraShaderGUI"
 }
