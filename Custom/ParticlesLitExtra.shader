@@ -1,6 +1,6 @@
 // ------------------------------------------
 // No shadows
-Shader "Universal Render Pipeline/Particles/Lit"
+Shader "Universal Render Pipeline/Particles/Lit Extra"
 {
     Properties
     {
@@ -158,8 +158,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitForwardPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include "Include/Particles/ParticlesLitForwardPass.hlsl"
             ENDHLSL
         }
 
@@ -229,8 +229,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitGbufferPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include "Include/Particles/ParticlesLitGbufferPass.hlsl"
             ENDHLSL
         }
 
@@ -272,8 +272,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthOnlyPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include "Include/Particles/ParticlesDepthOnlyPass.hlsl"
             ENDHLSL
         }
         // This pass is used when drawing to a _CameraNormalsTexture texture
@@ -313,8 +313,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthNormalsPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include "Include/Particles/ParticlesDepthNormalsPass.hlsl"
             ENDHLSL
         }
         // ------------------------------------------------------------------
@@ -356,8 +356,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesEditorPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL
         }
@@ -401,8 +401,8 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesEditorPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL
         }
@@ -435,12 +435,12 @@ Shader "Universal Render Pipeline/Particles/Lit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesLitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Utils/Universal2D.hlsl"
             ENDHLSL
         }
     }
 
     Fallback "Universal Render Pipeline/Particles/Simple Lit"
-    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.ParticlesLitShader"
+    CustomEditor "ParticlesLitExtraShaderGUI"
 }

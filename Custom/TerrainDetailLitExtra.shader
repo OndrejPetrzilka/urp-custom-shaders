@@ -42,7 +42,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
             #pragma fragment TerrainLitForwardFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLitPasses.hlsl"
+            #include "Include/TerrainDetails/TerrainDetailLitPasses.hlsl"
             ENDHLSL
         }
 

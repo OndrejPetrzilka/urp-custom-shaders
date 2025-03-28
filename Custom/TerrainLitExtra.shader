@@ -1,4 +1,4 @@
-Shader "Universal Render Pipeline/Terrain/Lit"
+Shader "Universal Render Pipeline/Terrain/Lit Extra"
 {
     Properties
     {
@@ -99,7 +99,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
+            #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
 
@@ -127,7 +127,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
+            #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
 
@@ -183,7 +183,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
             #define TERRAIN_GBUFFER 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
+            #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
 
@@ -205,7 +205,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
+            #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
 
@@ -229,7 +229,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitDepthNormalsPass.hlsl"
+            #include "Include/Terrain/TerrainLitDepthNormalsPass.hlsl"
             ENDHLSL
         }
 
@@ -249,7 +249,7 @@ Shader "Universal Render Pipeline/Terrain/Lit"
 
             #define SCENESELECTIONPASS
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitPasses.hlsl"
+            #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
 
@@ -279,11 +279,11 @@ Shader "Universal Render Pipeline/Terrain/Lit"
 
         UsePass "Hidden/Nature/Terrain/Utilities/PICKING"
     }
-    Dependency "AddPassShader" = "Hidden/Universal Render Pipeline/Terrain/Lit (Add Pass)"
-    Dependency "BaseMapShader" = "Hidden/Universal Render Pipeline/Terrain/Lit (Base Pass)"
+    Dependency "AddPassShader" = "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
+    Dependency "BaseMapShader" = "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
     Dependency "BaseMapGenShader" = "Hidden/Universal Render Pipeline/Terrain/Lit (Basemap Gen)"
 
-    CustomEditor "UnityEditor.Rendering.Universal.TerrainLitShaderGUI"
+    CustomEditor "TerrainLitExtraShaderGUI"
 
     Fallback "Hidden/Universal Render Pipeline/FallbackError"
 }

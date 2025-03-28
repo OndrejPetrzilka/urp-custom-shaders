@@ -1,4 +1,4 @@
-Shader "Universal Render Pipeline/Particles/Unlit"
+Shader "Universal Render Pipeline/Particles/Unlit Extra"
 {
     Properties
     {
@@ -121,8 +121,8 @@ Shader "Universal Render Pipeline/Particles/Unlit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitForwardPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitForwardPass.hlsl"
 
             ENDHLSL
         }
@@ -165,8 +165,8 @@ Shader "Universal Render Pipeline/Particles/Unlit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthOnlyPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include "Include/Particles/ParticlesDepthOnlyPass.hlsl"
             ENDHLSL
         }
         // This pass is used when drawing to a _CameraNormalsTexture texture with the forward renderer or the depthNormal prepass with the deferred renderer.
@@ -184,7 +184,8 @@ Shader "Universal Render Pipeline/Particles/Unlit"
             Cull[_Cull]
 
             HLSLPROGRAM
-            #pragma target 2.0
+            #pragma exclude_renderers gles3 glcore
+            #pragma target 4.5
 
             // -------------------------------------
             // Shader Stages
@@ -209,8 +210,8 @@ Shader "Universal Render Pipeline/Particles/Unlit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthNormalsPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include "Include/Particles/ParticlesDepthNormalsPass.hlsl"
             ENDHLSL
         }
 
@@ -253,8 +254,8 @@ Shader "Universal Render Pipeline/Particles/Unlit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesEditorPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL
         }
@@ -298,13 +299,13 @@ Shader "Universal Render Pipeline/Particles/Unlit"
 
             // -------------------------------------
             // Includes
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesEditorPass.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL
         }
     }
 
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.ParticlesUnlitShader"
+    CustomEditor "ParticlesUnlitExtraShaderGUI"
 }
