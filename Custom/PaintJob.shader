@@ -40,6 +40,19 @@ Shader "Universal Render Pipeline/Paint job"
         _DetailNormalMapScale("Scale", Range(0.0, 2.0)) = 1.0
         [Normal] _DetailNormalMap("Normal Map", 2D) = "bump" {}
 
+        // Colorization
+        _TargetHue("Colorize hue", Range(0.0, 1.0)) = 0
+        _TargetHueRange("Colorize hue range", Range(0.0, 1.0)) = 0.03
+        [HideInInspector] _ColorLookup("ColorLookup", 2D) = "red" {}
+        [HideInInspector] _Decal0("Decal0", 2D) = "black" {}
+        [HideInInspector] _Decal1("Decal1", 2D) = "black" {}
+        [HideInInspector] _Decal2("Decal2", 2D) = "black" {}
+        [HideInInspector] _Decal3("Decal3", 2D) = "black" {}
+
+        [HideInInspector] _DecalGradient("DecalGradient", 2D) = "black" {}
+
+        [HideInInspector] _DecalMask("DecalMask", Int) = 0
+
         // SRP batching compatibility for Clear Coat (Not used in Lit)
         [HideInInspector] _ClearCoatMask("_ClearCoatMask", Float) = 0.0
         [HideInInspector] _ClearCoatSmoothness("_ClearCoatSmoothness", Float) = 0.0
