@@ -32,6 +32,12 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
         [HideInInspector] _ZWrite("__zw", Float) = 1.0
         [HideInInspector] _AlphaToMask("__alphaToMask", Float) = 0.0
 
+        //[Toggle] _FIRST_PERSON_RENDERING("First Person Projection", Float) = 0.0 
+        [KeywordEnum(OFF,ON,ASYMMETRIC)] _FIRST_PERSON_RENDERING("First Person Projection", Float) = 0.0 
+
+        // UV Shift
+        _UvScrollSpeed("UV Scroll Speed", Vector) = (0.0, 0.0, 0.0, 0.0)
+
         // Particle specific
         _ColorMode("_ColorMode", Float) = 0.0
         [HideInInspector] _BaseColorAddSubDiff("_ColorMode", Vector) = (0,0,0,0)
@@ -121,7 +127,9 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
 
             // -------------------------------------
             // Includes
+            #include_with_pragmas "ParticlesExtraProps.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "ParticlesExtra.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitForwardPass.hlsl"
 
             ENDHLSL
@@ -165,7 +173,9 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
 
             // -------------------------------------
             // Includes
+            #include_with_pragmas "ParticlesExtraProps.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "ParticlesExtra.hlsl"
             #include "Include/Particles/ParticlesDepthOnlyPass.hlsl"
             ENDHLSL
         }
@@ -210,7 +220,9 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
 
             // -------------------------------------
             // Includes
+            #include_with_pragmas "ParticlesExtraProps.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "ParticlesExtra.hlsl"
             #include "Include/Particles/ParticlesDepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -254,7 +266,9 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
 
             // -------------------------------------
             // Includes
+            #include_with_pragmas "ParticlesExtraProps.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "ParticlesExtra.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL
@@ -299,7 +313,9 @@ Shader "Universal Render Pipeline/Particles/Unlit Extra"
 
             // -------------------------------------
             // Includes
+            #include_with_pragmas "ParticlesExtraProps.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesUnlitInput.hlsl"
+            #include_with_pragmas "ParticlesExtra.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesEditorPass.hlsl"
 
             ENDHLSL

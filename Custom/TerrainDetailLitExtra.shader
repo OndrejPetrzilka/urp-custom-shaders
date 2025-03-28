@@ -42,6 +42,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
             #pragma fragment TerrainLitForwardFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLitInput.hlsl"
+            #include "TerrainDetailLitExtra.hlsl"
             #include "Include/TerrainDetails/TerrainDetailLitPasses.hlsl"
             ENDHLSL
         }
@@ -76,6 +77,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
+            #include "TerrainDetailLitExtra.hlsl"
 
             TEXTURE2D(_MainTex);       SAMPLER(sampler_MainTex);
             float4 _MainTex_ST;
@@ -181,6 +183,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
                 inputData.normalWS = input.NormalWS;
                 inputData.positionCS = input.PositionCS;
 
+                FRAG_SURFACE(color.rgb, input.NormalWS, input.PositionWS.y);
                 return SurfaceDataToGbuffer(surfaceData, inputData, color.rgb, kLightingInvalid);
             }
             ENDHLSL

@@ -34,6 +34,10 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
         [HideInInspector] _BaseColor("Main Color", Color) = (1,1,1,1)
 
         [HideInInspector] _TerrainHolesTexture("Holes Map (RGB)", 2D) = "white" {}
+        [HideInInspector] _Cull ("__cull", Float) = 2.0
+
+        // Dust
+		[KeywordEnum(OFF, LEVEL0, LEVEL1, LEVEL2, LEVEL3)] DUST("Dust level", Float) = 0
     }
 
     HLSLINCLUDE
@@ -51,6 +55,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             Name "TerrainAddLit"
             Tags { "LightMode" = "UniversalForward" }
             Blend One One
+            Cull [_Cull]
             HLSLPROGRAM
             #pragma target 3.0
 
@@ -89,6 +94,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             #define TERRAIN_SPLAT_ADDPASS
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -99,6 +105,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             Tags{"LightMode" = "UniversalGBuffer"}
 
             Blend One One
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 4.5
@@ -140,6 +147,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             #define TERRAIN_GBUFFER 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }

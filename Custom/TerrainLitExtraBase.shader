@@ -6,6 +6,10 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
         _MainTex("Albedo(RGB), Smoothness(A)", 2D) = "white" {}
         _MetallicTex ("Metallic (R)", 2D) = "black" {}
         [HideInInspector] _TerrainHolesTexture("Holes Map (RGB)", 2D) = "white" {}
+        [HideInInspector] _Cull ("__cull", Float) = 2.0
+
+        // Dust
+		[KeywordEnum(OFF, LEVEL0, LEVEL1, LEVEL2, LEVEL3)] DUST("Dust level", Float) = 0
     }
 
     HLSLINCLUDE
@@ -27,6 +31,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             // Lightmode matches the ShaderPassName set in UniversalPipeline.cs. SRPDefaultUnlit and passes with
             // no LightMode tag are also rendered by Universal Pipeline
             Tags{"LightMode" = "UniversalForward"}
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -70,6 +75,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             #define TERRAIN_SPLAT_BASEPASS 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -81,6 +87,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
 
             ZWrite On
             ColorMask 0
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -92,6 +99,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             #pragma fragment ShadowPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -102,6 +110,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
         {
             Name "GBuffer"
             Tags{"LightMode" = "UniversalGBuffer"}
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 4.5
@@ -148,6 +157,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             #define TERRAIN_GBUFFER 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -159,6 +169,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
 
             ZWrite On
             ColorMask R
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -170,6 +181,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -180,6 +192,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             Tags{"LightMode" = "DepthNormals"}
 
             ZWrite On
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -192,6 +205,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Base Pass)"
             #pragma shader_feature_local _NORMALMAP
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitDepthNormalsPass.hlsl"
             ENDHLSL
         }

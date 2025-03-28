@@ -53,6 +53,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/BillboardWavingDoublePass
             #define _ALPHATEST_ON
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassInput.hlsl"
+            #include "WavingGrassExtra.hlsl"
             #include "Include/TerrainDetails/WavingGrassPasses.hlsl"
             ENDHLSL
         }
@@ -95,6 +96,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/BillboardWavingDoublePass
             #define TERRAIN_GBUFFER
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassInput.hlsl"
+            #include "WavingGrassExtra.hlsl"
             #include "Include/TerrainDetails/WavingGrassPasses.hlsl"
             ENDHLSL
         }
@@ -124,6 +126,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/BillboardWavingDoublePass
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassInput.hlsl"
+            #include "WavingGrassExtra.hlsl"
             #include "Include/TerrainDetails/WavingGrassPasses.hlsl"
             ENDHLSL
         }
@@ -152,6 +155,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/BillboardWavingDoublePass
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassInput.hlsl"
+            #include "WavingGrassExtra.hlsl"
             #include "Include/TerrainDetails/WavingGrassDepthNormalsPass.hlsl"
             ENDHLSL
         }

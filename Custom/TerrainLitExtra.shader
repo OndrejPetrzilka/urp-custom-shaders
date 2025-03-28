@@ -36,6 +36,11 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
         [HideInInspector] _BaseColor("Main Color", Color) = (1,1,1,1)
 
         [HideInInspector] _TerrainHolesTexture("Holes Map (RGB)", 2D) = "white" {}
+        [HideInInspector] _Cull ("__cull", Float) = 2.0
+
+        // Dust
+        [Toggle] _DUST("Dust", Float) = 0.0 
+        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3)] _DustLevel("Dust level", Integer) = 0
 
         [ToggleUI] _EnableInstancedPerPixelNormal("Enable Instanced per-pixel normal", Float) = 1.0
     }
@@ -54,6 +59,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
+            Cull [_Cull]
             HLSLPROGRAM
             #pragma target 3.0
 
@@ -99,6 +105,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -110,6 +117,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
 
             ZWrite On
             ColorMask 0
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -127,6 +135,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -135,6 +144,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
         {
             Name "GBuffer"
             Tags{"LightMode" = "UniversalGBuffer"}
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 4.5
@@ -183,6 +193,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             #define TERRAIN_GBUFFER 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -194,6 +205,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
 
             ZWrite On
             ColorMask R
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -205,6 +217,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -216,6 +229,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             Tags{"LightMode" = "DepthNormals"}
 
             ZWrite On
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -229,6 +243,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitDepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -237,6 +252,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
         {
             Name "SceneSelectionPass"
             Tags { "LightMode" = "SceneSelectionPass" }
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -249,6 +265,7 @@ Shader "Universal Render Pipeline/Terrain/Lit Extra"
 
             #define SCENESELECTIONPASS
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
