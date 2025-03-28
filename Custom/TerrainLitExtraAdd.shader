@@ -1,4 +1,4 @@
-Shader "Hidden/Universal Render Pipeline/Terrain/Lit (Add Pass)"
+Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
 {
     Properties
     {
