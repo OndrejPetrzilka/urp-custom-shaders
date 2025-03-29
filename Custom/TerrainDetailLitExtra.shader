@@ -182,8 +182,8 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
                 InputData inputData = (InputData)0;
                 inputData.normalWS = input.NormalWS;
                 inputData.positionCS = input.PositionCS;
-
                 FRAG_SURFACE(color.rgb, input.NormalWS, input.PositionWS.y);
+
                 return SurfaceDataToGbuffer(surfaceData, inputData, color.rgb, kLightingInvalid);
             }
             ENDHLSL
