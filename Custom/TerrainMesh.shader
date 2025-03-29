@@ -2,41 +2,72 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
 {
     Properties
     {
-        [HideInInspector] [ToggleUI] _EnableHeightBlend("EnableHeightBlend", Float) = 0.0
+        [ToggleUI] _EnableHeightBlend("EnableHeightBlend", Float) = 0.0
         _HeightTransition("Height Transition", Range(0, 1.0)) = 0.0
         // Layer count is passed down to guide height-blend enable/disable, due
         // to the fact that heigh-based blend will be broken with multipass.
-        [HideInInspector] [PerRendererData] _NumLayersCount ("Total Layer Count", Float) = 1.0
+        _NumLayersCount ("Total Layer Count", Float) = 1.0
 
         // set by terrain engine
-        [HideInInspector] _Control("Control (RGBA)", 2D) = "red" {}
-        [HideInInspector] _Splat3("Layer 3 (A)", 2D) = "grey" {}
-        [HideInInspector] _Splat2("Layer 2 (B)", 2D) = "grey" {}
-        [HideInInspector] _Splat1("Layer 1 (G)", 2D) = "grey" {}
-        [HideInInspector] _Splat0("Layer 0 (R)", 2D) = "grey" {}
-        [HideInInspector] _Normal3("Normal 3 (A)", 2D) = "bump" {}
-        [HideInInspector] _Normal2("Normal 2 (B)", 2D) = "bump" {}
-        [HideInInspector] _Normal1("Normal 1 (G)", 2D) = "bump" {}
-        [HideInInspector] _Normal0("Normal 0 (R)", 2D) = "bump" {}
-        [HideInInspector] _Mask3("Mask 3 (A)", 2D) = "grey" {}
-        [HideInInspector] _Mask2("Mask 2 (B)", 2D) = "grey" {}
-        [HideInInspector] _Mask1("Mask 1 (G)", 2D) = "grey" {}
-        [HideInInspector] _Mask0("Mask 0 (R)", 2D) = "grey" {}
-        [HideInInspector][Gamma] _Metallic0("Metallic 0", Range(0.0, 1.0)) = 0.0
-        [HideInInspector][Gamma] _Metallic1("Metallic 1", Range(0.0, 1.0)) = 0.0
-        [HideInInspector][Gamma] _Metallic2("Metallic 2", Range(0.0, 1.0)) = 0.0
-        [HideInInspector][Gamma] _Metallic3("Metallic 3", Range(0.0, 1.0)) = 0.0
-        [HideInInspector] _Smoothness0("Smoothness 0", Range(0.0, 1.0)) = 0.5
-        [HideInInspector] _Smoothness1("Smoothness 1", Range(0.0, 1.0)) = 0.5
-        [HideInInspector] _Smoothness2("Smoothness 2", Range(0.0, 1.0)) = 0.5
-        [HideInInspector] _Smoothness3("Smoothness 3", Range(0.0, 1.0)) = 0.5
+         _Control("Control (RGBA)", 2D) = "red" {}
+         _Splat3("Layer 3 (A)", 2D) = "grey" {}
+         _Splat2("Layer 2 (B)", 2D) = "grey" {}
+         _Splat1("Layer 1 (G)", 2D) = "grey" {}
+         _Splat0("Layer 0 (R)", 2D) = "grey" {}
+         _Normal3("Normal 3 (A)", 2D) = "bump" {}
+         _Normal2("Normal 2 (B)", 2D) = "bump" {}
+         _Normal1("Normal 1 (G)", 2D) = "bump" {}
+         _Normal0("Normal 0 (R)", 2D) = "bump" {}
+         _Mask3("Mask 3 (A)", 2D) = "grey" {}
+         _Mask2("Mask 2 (B)", 2D) = "grey" {}
+         _Mask1("Mask 1 (G)", 2D) = "grey" {}
+         _Mask0("Mask 0 (R)", 2D) = "grey" {}
+        [Gamma] _Metallic0("Metallic 0", Range(0.0, 1.0)) = 0.0
+        [Gamma] _Metallic1("Metallic 1", Range(0.0, 1.0)) = 0.0
+        [Gamma] _Metallic2("Metallic 2", Range(0.0, 1.0)) = 0.0
+        [Gamma] _Metallic3("Metallic 3", Range(0.0, 1.0)) = 0.0
+         _Smoothness0("Smoothness 0", Range(0.0, 1.0)) = 0.5
+         _Smoothness1("Smoothness 1", Range(0.0, 1.0)) = 0.5
+         _Smoothness2("Smoothness 2", Range(0.0, 1.0)) = 0.5
+         _Smoothness3("Smoothness 3", Range(0.0, 1.0)) = 0.5
+
+        _DiffuseRemapScale0("Diffuse scale 0", Vector) = (1,1,1,1)
+        _DiffuseRemapScale1("Diffuse scale 1", Vector) = (1,1,1,1)
+        _DiffuseRemapScale2("Diffuse scale 2", Vector) = (1,1,1,1)
+        _DiffuseRemapScale3("Diffuse scale 3", Vector) = (1,1,1,1)
+
+        _NormalScale0("Normal scale 0", Range(0, 5)) = 1
+        _NormalScale1("Normal scale 1", Range(0, 5)) = 1
+        _NormalScale2("Normal scale 2", Range(0, 5)) = 1
+        _NormalScale3("Normal scale 3", Range(0, 5)) = 1
+
+        _DiffuseRemapScale0("Diffuse scale 0", Vector) = (1,1,1,1)
+        _DiffuseRemapScale1("Diffuse scale 1", Vector) = (1,1,1,1)
+        _DiffuseRemapScale2("Diffuse scale 2", Vector) = (1,1,1,1)
+        _DiffuseRemapScale3("Diffuse scale 3", Vector) = (1,1,1,1)
+
+        _MaskMapRemapOffset0("Mask map offset 0", Vector) = (0,0,0,0)
+        _MaskMapRemapOffset1("Mask map offset 1", Vector) = (0,0,0,0)
+        _MaskMapRemapOffset2("Mask map offset 2", Vector) = (0,0,0,0)
+        _MaskMapRemapOffset3("Mask map offset 3", Vector) = (0,0,0,0)
+
+        _MaskMapRemapScale0("Mask map scale 0", Vector) = (1,1,1,1)
+        _MaskMapRemapScale1("Mask map scale 1", Vector) = (1,1,1,1)
+        _MaskMapRemapScale2("Mask map scale 2", Vector) = (1,1,1,1)
+        _MaskMapRemapScale3("Mask map scale 3", Vector) = (1,1,1,1)
 
         // used in fallback on old cards & base map
-        [HideInInspector] _MainTex("BaseMap (RGB)", 2D) = "grey" {}
-        [HideInInspector] _BaseColor("Main Color", Color) = (1,1,1,1)
+        _MainTex("BaseMap (RGB)", 2D) = "grey" {}
+        _BaseColor("Main Color", Color) = (1,1,1,1)
 
-        [HideInInspector] _TerrainHolesTexture("Holes Map (RGB)", 2D) = "white" {}
+        _TerrainHolesTexture("Holes Map (RGB)", 2D) = "white" {}
+        _Cull ("__cull", Float) = 2.0
 
+        // Dust
+        [Toggle] _DUST("Dust", Float) = 0.0 
+        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3)] _DustLevel("Dust level", Integer) = 0
+
+        [Toggle(_NORMALMAP)] _EnableNormalMap("EnableNormalMap", Float) = 1.0
         [ToggleUI] _EnableInstancedPerPixelNormal("Enable Instanced per-pixel normal", Float) = 1.0
     }
 
@@ -54,6 +85,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
+            Cull [_Cull]
             HLSLPROGRAM
             #pragma target 3.0
 
@@ -99,6 +131,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -110,6 +143,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
 
             ZWrite On
             ColorMask 0
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -127,6 +161,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -135,6 +170,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
         {
             Name "GBuffer"
             Tags{"LightMode" = "UniversalGBuffer"}
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 4.5
@@ -183,6 +219,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             #define TERRAIN_GBUFFER 1
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -194,6 +231,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
 
             ZWrite On
             ColorMask R
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -205,6 +243,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
@@ -216,6 +255,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             Tags{"LightMode" = "DepthNormals"}
 
             ZWrite On
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -229,6 +269,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
             #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitDepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -237,6 +278,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
         {
             Name "SceneSelectionPass"
             Tags { "LightMode" = "SceneSelectionPass" }
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -249,6 +291,7 @@ Shader "Universal Render Pipeline/Terrain/Mesh"
 
             #define SCENESELECTIONPASS
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
+            #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
             ENDHLSL
         }
