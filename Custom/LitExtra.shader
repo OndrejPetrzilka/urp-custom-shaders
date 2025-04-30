@@ -53,7 +53,7 @@ Shader "Universal Render Pipeline/Lit Extra"
 
         // Dust
         [Toggle] _DUST("Dust", Float) = 0.0
-        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3)] _DustLevel("Dust level", Integer) = 0
+        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3, Level4, 4, Level5, 5, Level6, 6)] _DustLevel("Dust level", Integer) = 0
 
         // SRP batching compatibility for Clear Coat (Not used in Lit)
         [HideInInspector] _ClearCoatMask("_ClearCoatMask", Float) = 0.0
@@ -494,8 +494,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
 
-            #pragma multi_compile_vertex _ _FIRST_PERSON_RENDERING_ON
-            #include "Include/Lit/LitInput.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
             #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
         }
@@ -521,8 +520,7 @@ Shader "Universal Render Pipeline/Lit Extra"
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
             #define APLICATION_SPACE_WARP_MOTION 1
 
-            #pragma multi_compile_vertex _ _FIRST_PERSON_RENDERING_ON
-            #include "Include/Lit/LitInput.hlsl"
+            #include_with_pragmas "LitExtra.hlsl"
             #include_with_pragmas "ObjectMotionVectors.hlsl"
             ENDHLSL
         }
