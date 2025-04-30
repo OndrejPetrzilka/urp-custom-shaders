@@ -37,7 +37,8 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
         [HideInInspector] _Cull ("__cull", Float) = 2.0
 
         // Dust
-		[KeywordEnum(OFF, LEVEL0, LEVEL1, LEVEL2, LEVEL3)] DUST("Dust level", Float) = 0
+		[Toggle] _DUST("Dust", Float) = 0.0 
+        [Enum(Level0, 0, Level1, 1, Level2, 2, Level3, 3, Level4, 4, Level5, 5, Level6, 6)] _DustLevel("Dust level", Integer) = 0
     }
 
     HLSLINCLUDE
