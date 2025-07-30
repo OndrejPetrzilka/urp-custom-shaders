@@ -52,10 +52,10 @@ GBufferFragOutput PackGBuffersSurfaceData(SurfaceData surfaceData, InputData inp
     #endif
 
     GBufferFragOutput output;
-    output.gBuffer0 = half4(surfaceData.albedo.rgb, PackGBufferMaterialFlags(materialFlags));   // albedo          albedo          albedo          materialFlags   (sRGB rendertarget)
-    output.gBuffer1 = half4(surfaceData.specular.rgb, surfaceData.occlusion);                   // specular        specular        specular        occlusion
-    output.gBuffer2 = half4(packedNormalWS, surfaceData.smoothness);                            // encoded-normal  encoded-normal  encoded-normal  smoothness
-    output.color    = half4(globalIllumination, 1);                                             // GI              GI              GI              unused          (lighting buffer)
+    output.gBuffer0 = half4(surfaceData.albedo.rgb, PackGBufferMaterialFlags(materialFlags));               // albedo          albedo          albedo          materialFlags   (sRGB rendertarget)
+    output.gBuffer1 = half4(surfaceData.specular.r, surfaceData.occlusion, surfaceData.smoothness, 1.0f);   // metallic        occlusion       smoothness      unused
+    output.gBuffer2 = half4(packedNormalWS, 1.0f);                                                          // encoded-normal  encoded-normal  encoded-normal  unused
+    output.color    = half4(globalIllumination, 1);                                                         // GI              GI              GI              unused          (lighting buffer)
 
     #if defined(GBUFFER_FEATURE_DEPTH)
     output.depth = inputData.positionCS.z;
@@ -106,10 +106,10 @@ GBufferFragOutput PackGBuffersBRDFData(BRDFData brdfData, InputData inputData, h
     materialFlags |= kMaterialFlagSubtractiveMixedLighting;
     #endif
 
-    GBufferFragOutput output;
+    GBufferFragOutput output; 
     output.gBuffer0 = half4(brdfData.albedo.rgb, PackGBufferMaterialFlags(materialFlags));  // diffuse           diffuse         diffuse         materialFlags   (sRGB rendertarget)
-    output.gBuffer1 = half4(packedSpecular, occlusion);                                     // metallic/specular specular        specular        occlusion
-    output.gBuffer2 = half4(packedNormalWS, smoothness);                                    // encoded-normal    encoded-normal  encoded-normal  smoothness
+    output.gBuffer1 = half4(packedSpecular.r, occlusion, smoothness, 1.0f);                 // metallic          occlusion       smoothness      unused
+    output.gBuffer2 = half4(packedNormalWS, 1.0f);                                          // encoded-normal    encoded-normal  encoded-normal  unused
     output.color = half4(globalIllumination, 1);                                            // GI                GI              GI              unused          (lighting buffer)
 
     #if defined(GBUFFER_FEATURE_DEPTH)
