@@ -127,6 +127,10 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             ColorMask 0 6
             Cull [_Cull]
 
+            // Extra addition to override blending 4 (ShadowMask RT) from "Off" to "One One", for some reason it's needed
+            Blend 4 One One
+            ColorMask RGBA 4
+
             HLSLPROGRAM
             #pragma target 4.5
 
