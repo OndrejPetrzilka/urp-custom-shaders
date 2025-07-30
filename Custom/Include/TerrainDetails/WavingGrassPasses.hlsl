@@ -224,8 +224,19 @@ half4 LitPassFragmentGrass(GrassVertexOutput input) : SV_Target
 
     InputData inputData;
     InitializeInputData(input, inputData);
-    FRAG_SURFACE(inputData, surfaceData);
+
+#if defined(_DBUFFER)
+    ApplyDecal(input.clipPos,
+        surfaceData.albedo,
+        surfaceData.specular,
+        inputData.normalWS,
+        surfaceData.metallic,
+        surfaceData.occlusion,
+        surfaceData.smoothness);
+#endif
+
     SETUP_DEBUG_TEXTURE_DATA_FOR_TEX(inputData, input.uv, _MainTex);
+    FRAG_SURFACE(inputData, surfaceData);
 
 #ifdef TERRAIN_GBUFFER
     half4 color = half4(inputData.bakedGI * surfaceData.albedo + surfaceData.emission, surfaceData.alpha);

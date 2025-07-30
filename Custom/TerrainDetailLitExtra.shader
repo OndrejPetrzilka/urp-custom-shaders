@@ -23,6 +23,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _DBUFFER_MRT1 _DBUFFER_MRT2 _DBUFFER_MRT3
             #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
@@ -69,6 +70,7 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX //_ADDITIONAL_LIGHTS
             //#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile_fragment _ _DBUFFER_MRT1 _DBUFFER_MRT2 _DBUFFER_MRT3
             #pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
 
             // -------------------------------------
@@ -188,6 +190,16 @@ Shader "Hidden/TerrainEngine/Details/UniversalPipeline/Vertexlit"
                 InputData inputData = (InputData)0;
                 inputData.normalWS = input.NormalWS;
                 inputData.positionCS = input.PositionCS;
+
+#if defined(_DBUFFER)
+    ApplyDecal(inputData.positionCS,
+        surfaceData.albedo,
+        surfaceData.specular,
+        inputData.normalWS,
+        surfaceData.metallic,
+        surfaceData.occlusion,
+        surfaceData.smoothness);
+#endif
 
                 FRAG_SURFACE(color.rgb, input.NormalWS, input.PositionWS.y);
                 return PackGBuffersSurfaceData(surfaceData, inputData, color.rgb);
