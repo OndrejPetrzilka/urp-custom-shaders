@@ -253,14 +253,15 @@ void LitPassFragment(
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
-    FRAG_SURFACE(inputData, surfaceData, input.extraVaryings);
     SETUP_DEBUG_TEXTURE_DATA(inputData, UNDO_TRANSFORM_TEX(input.uv, _BaseMap));
+    FRAG_SURFACE_PRE_DECAL(inputData, surfaceData, input.extraVaryings);
 
 #if defined(_DBUFFER)
     ApplyDecalToSurfaceData(input.positionCS, surfaceData, inputData);
 #endif
 
     InitializeBakedGIData(input, inputData);
+    FRAG_SURFACE(inputData, surfaceData, input.extraVaryings);
 
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
