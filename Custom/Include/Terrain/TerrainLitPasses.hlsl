@@ -409,6 +409,13 @@ void SplatmapFragment(
     half metallic = SAMPLE_TEXTURE2D(_MetallicTex, sampler_MetallicTex, IN.uvMainAndLM.xy).r;
     half alpha = 1;
     half occlusion = 1;
+#elif defined(TERRAIN_CUSTOM_BLEND)
+    half3 albedo;
+    half smoothness;
+    half metallic;
+    half alpha;
+    half occlusion;
+    TERRAIN_CUSTOM_BLEND(IN.uvMainAndLM, albedo, normalTS, metallic, occlusion, smoothness, alpha);
 #else
 
     half4 hasMask = half4(_LayerHasMask0, _LayerHasMask1, _LayerHasMask2, _LayerHasMask3);
