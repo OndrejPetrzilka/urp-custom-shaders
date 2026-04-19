@@ -82,11 +82,22 @@ void DepthNormalOnlyFragment(
         ClipHoles(IN.uvMainAndLM.xy);
     #endif
 
-    float2 splatUV = (IN.uvMainAndLM.xy * (_Control_TexelSize.zw - 1.0f) + 0.5f) * _Control_TexelSize.xy;
-    half4 splatControl = SAMPLE_TEXTURE2D(_Control, sampler_Control, splatUV);
 
-    half3 normalTS = half3(0.0h, 0.0h, 1.0h);
-    NormalMapMix(IN.uvSplat01, IN.uvSplat23, splatControl, normalTS);
+    #if defined(TERRAIN_CUSTOM_BLEND)
+        half3 albedo;
+        half smoothness;
+        half metallic;
+        half alpha;
+        half occlusion;
+        half3 normalTS;
+        TERRAIN_CUSTOM_BLEND(IN.uvMainAndLM, albedo, normalTS, metallic, occlusion, smoothness, alpha);
+    #else
+        float2 splatUV = (IN.uvMainAndLM.xy * (_Control_TexelSize.zw - 1.0f) + 0.5f) * _Control_TexelSize.xy;
+        half4 splatControl = SAMPLE_TEXTURE2D(_Control, sampler_Control, splatUV);
+
+        half3 normalTS = half3(0.0h, 0.0h, 1.0h);
+        NormalMapMix(IN.uvSplat01, IN.uvSplat23, splatControl, normalTS);
+    #endif
 
     #if defined(_NORMALMAP) && !defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
         half3 normalWS = TransformTangentToWorld(normalTS, half3x3(-IN.tangent.xyz, IN.bitangent.xyz, IN.normal.xyz));
