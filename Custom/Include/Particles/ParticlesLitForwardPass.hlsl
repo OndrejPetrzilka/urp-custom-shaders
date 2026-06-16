@@ -1,6 +1,7 @@
 #ifndef UNIVERSAL_PARTICLES_FORWARD_LIT_PASS_INCLUDED
 #define UNIVERSAL_PARTICLES_FORWARD_LIT_PASS_INCLUDED
 
+#include "ParticlesLitInput.hlsl"
 #include "ParticleInjectInterface.hlsl"
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -141,7 +142,7 @@ half4 ParticlesLitFragment(VaryingsParticle input) : SV_Target
 
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
-    color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
+    color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent());
 
     return color;
 }
