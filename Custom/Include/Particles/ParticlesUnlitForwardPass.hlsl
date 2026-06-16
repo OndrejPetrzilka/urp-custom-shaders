@@ -3,6 +3,7 @@
 
 #include "ParticleInjectInterface.hlsl"
 
+#include "ParticlesUnlitInput.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Unlit.hlsl"
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
 
@@ -164,7 +165,7 @@ half4 fragParticleUnlit(VaryingsParticle input) : SV_Target
     #endif
 
     finalColor.rgb = MixFog(finalColor.rgb, inputData.fogCoord);
-    finalColor.a = OutputAlpha(finalColor.a, IsSurfaceTypeTransparent(_Surface));
+    finalColor.a = OutputAlpha(finalColor.a, IsSurfaceTypeTransparent());
 
     return finalColor;
 }

@@ -3,6 +3,7 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesInput.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/Shaders/Utils/SurfaceType.hlsl"
 
 #ifndef PER_MATERIAL_PROPERTIES_FIRST
 #define PER_MATERIAL_PROPERTIES_FIRST
@@ -28,8 +29,11 @@ half _Smoothness;
 half _BumpScale;
 half _DistortionStrengthScaled;
 half _DistortionBlend;
+<<<<<<< HEAD:Custom/Include/Particles/ParticlesLitInput.hlsl
 half _Surface;
 PER_MATERIAL_PROPERTIES
+=======
+>>>>>>> 6000.5.0f1_0c18adc4ff89:Shaders/Particles/ParticlesLitInput.hlsl
 CBUFFER_END
 
 #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"

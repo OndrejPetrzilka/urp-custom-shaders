@@ -3,6 +3,7 @@
 
 #include "LitInjectInterface.hlsl"
 
+#include "LitInput.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 
@@ -281,7 +282,7 @@ void LitPassFragment(
 
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
-    color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
+    color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent());
 
     outColor = color;
 
