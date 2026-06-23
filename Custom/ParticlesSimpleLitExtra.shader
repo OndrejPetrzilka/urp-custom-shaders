@@ -250,6 +250,7 @@ Shader "Universal Render Pipeline/Particles/Simple Lit Extra"
             #include_with_pragmas "Include/Particles/ParticlesSimpleLitInput.hlsl"
             #include_with_pragmas "ParticlesExtra.hlsl"
             #include_with_pragmas "Include/Particles/ParticlesSimpleLitGBufferPass.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutputFormat.hlsl"
             ENDHLSL
         }
 

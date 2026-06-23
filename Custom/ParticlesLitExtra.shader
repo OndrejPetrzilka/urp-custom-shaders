@@ -242,6 +242,7 @@ Shader "Universal Render Pipeline/Particles/Lit Extra"
             #include_with_pragmas "Include/Particles/ParticlesLitInput.hlsl"
             #include_with_pragmas "ParticlesExtra.hlsl"
             #include "Include/Particles/ParticlesLitGbufferPass.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutputFormat.hlsl"
             ENDHLSL
         }
 

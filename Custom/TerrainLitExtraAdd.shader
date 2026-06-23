@@ -181,6 +181,7 @@ Shader "Hidden/Universal Render Pipeline/Terrain/Lit Extra (Add Pass)"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitInput.hlsl"
             #include_with_pragmas "TerrainLitExtra.hlsl"
             #include "Include/Terrain/TerrainLitPasses.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutputFormat.hlsl"
             ENDHLSL
         }
     }

@@ -308,6 +308,7 @@ Shader "Universal Render Pipeline/Paint job"
             // Includes
             #include "PaintJob.hlsl"
             #include "Include/Lit/LitGBufferPass.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutputFormat.hlsl"
             ENDHLSL
         }
 
