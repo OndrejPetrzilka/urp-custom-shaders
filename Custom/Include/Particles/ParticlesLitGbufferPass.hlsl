@@ -94,7 +94,7 @@ VaryingsParticle ParticlesGBufferVertex(AttributesParticle input)
 
     output.positionWS.xyz = vertexInput.positionWS;
     output.clipPos = vertexInput.positionCS;
-    output.color = input.color;
+    output.color = GetParticleColor(input.color);
 
 #if defined(_FLIPBOOKBLENDING_ON)
 #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
